@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="utf-8">
+    <title> 牧笛 </title>
+    <link rel="stylesheet" type="text/css" href="./assets/vue/viewuiplus.css">
+    <script type="text/javascript" src="./assets/vue/vue.global.js"></script>
+    <script type="text/javascript" src="./assets/vue/viewuiplus.min.js"></script>
+    <script type="text/javascript" src="./assets/vue/axios.min.js"></script>
+    <script type="text/javascript" src="./assets/js/jquery.min.js"></script>
+</head>
+
+<style scoped>
+    #app{
+        font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    }
+    .layout{
+        border: 1px solid #d7dde4;
+        background: #f5f7f9;
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .layout-logo{
+        width: 150px;
+        height: 30px;
+        /*background: #515a6e;*/
+        border-radius: 3px;
+        float: left;
+        position: relative;
+        top: 15px;
+        left: 20px;
+        /*color: white;*/
+        color: #515a6e;
+        line-height: 30px;
+        text-align: center;
+        font-size: larger;
+        font-weight: bolder;
+        /*background-image: url("./assets/img/shine.jpg");*/
+    }
+    .layout-nav{
+        width: 350px;
+        margin: 0 auto;
+        margin-right: 20px;
+    }
+    .layout-footer-center{
+        text-align: center;
+    }
+    .layout .ivu-layout-header {
+        background: #191a23;
+    }
+    .layout-topMiddleBottom .ivu-menu-light{
+        background:none;
+        color: #fff
+    }
+
+     .img-div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    img {
+        width:auto;
+        height:auto;
+        max-width:100%;
+        max-height:100%;
+    }
+
+    body::-webkit-scrollbar { width: 0 !important }
+
+</style>
+
+<body>
+<div id="app">
+    <div class="layout">
+        <Layout>
+            <Header>
+                <i-Menu mode="horizontal" theme="light" :active-name="path">
+                    <div class="layout-logo">Lucky Mudi</div>
+                </i-Menu>
+            </Header>
+            <i-Content :style="{padding: '10px'}">
+                <div :style="{'height': contentHeightInner + 'px'}">
+                    <Carousel autoplay v-model="carousel" loop >
+                        <Carousel-Item v-for="(color, idx) in imgArr">
+                            <div class="demo-carousel img-div" :style="{'height': contentHeightInner + 'px', 'width': contentWidth+'px'}">
+                                <img :src="'./assets/img/'+idx+'.jpg'" />
+                            </div>
+                        </Carousel-Item>
+                    </Carousel> 
+                </div>
+
+                <br/><br/><br/>
+
+                <iframe src="./1.html" :style="{'height': contentHeightInner + 'px', 'width':'100%', 'border-width':'0px'}">
+                    
+                </iframe>
+            </i-Content>
+            <Footer class="layout-footer-center">2021-2022 &copy; Mudi Design</Footer>
+        </Layout>
+    </div>
+</div>  
+
+<script>
+
+var render = {
+    data () {
+        return {
+            carousel:0,
+            imgNum:9,
+
+            imgArr:[]
+        }
+    },
+    methods: {
+
+    },
+    mounted(){
+        for (i = 0; i < this.imgNum ; i ++) {
+            this.imgArr[i] = ""
+        }
+    }
+}
+</script>
+
+<script>
+    const myMixin = {
+        data () {
+            return {
+                clientHeight:0,
+                clientWidth:0,
+                contentHeight:0,
+                contentWidth:0,
+                path:"",
+
+                bulletscreenClick:0,
+            }
+        },
+        created() {
+            this.mix()
+            this.onresize()
+            this.path = window.location.pathname
+        },
+        methods: {
+            mix() {
+                console.log('混入实例!')
+            },
+            onresize() {
+                this.clientHeight = document.documentElement.clientHeight
+                this.contentHeight = this.clientHeight * 2 - 140
+                this.contentHeightInner = this.clientHeight - 110
+
+                this.clientWidth = document.documentElement.clientWidth
+                this.contentWidth = this.clientWidth - 36*2
+            },
+            getRGB() {
+                let r = parseInt(Math.random() * 256), //0-255
+                    g = parseInt(Math.random() * 256), //0-255
+                    b = parseInt(Math.random() * 256); //0-255
+                return `rgb(${r},${g},${b})` //使用了es6的模板字符串
+            },
+            showBulletscreen() {
+                this.bulletscreenClick ++
+            },
+            getUniqueId() {
+                num = navigator.userAgent.replace(/[^0-9]/ig, "")
+                return num.substr(num.length - 10)
+            },
+            getUniqueRGB(){
+                id = this.getUniqueId()
+                let r = parseInt(id  % 256), //0-255
+                    g = parseInt(id * 2 % 256), //0-255
+                    b = parseInt(id * 3 % 256); //0-255
+                return `rgb(${r},${g},${b})` //使用了es6的模板字符串
+            }
+
+        },
+        mounted() {
+            const that = this
+            window.onresize = () => {
+                return (() => {
+                    that.onresize()
+                })()
+            }
+        }
+    }
+
+    render.mixins = [myMixin]
+
+    const app = Vue.createApp(render);
+    app.use(ViewUIPlus);
+    app.mount("#app");
+</script>
+</body>
+</html>
